@@ -1,4 +1,4 @@
-package com.market.watchlistservice.dto;
+package com.market.marketsearchservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

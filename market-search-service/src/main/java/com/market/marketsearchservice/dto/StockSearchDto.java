@@ -17,4 +17,10 @@ public class StockSearchDto {
     private String timezone;
     private String currency;
     private double matchScore;
+
+    private double price;
+    private double change;
+    private double changePercent;
+    private long volume;
+    private double historicalPerformance;
 }

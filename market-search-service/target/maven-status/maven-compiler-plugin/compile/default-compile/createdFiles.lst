@@ -1,0 +1,11 @@
+com\market\marketsearchservice\external\YahooFinanceClient.class
+com\market\marketsearchservice\client\QuotesClient.class
+com\market\marketsearchservice\external\AlphaVantageClient.class
+com\market\marketsearchservice\marketsearchserviceApplication.class
+com\market\marketsearchservice\dto\QuoteDto.class
+com\market\marketsearchservice\service\MarketSearchService.class
+com\market\marketsearchservice\dto\StockSearchDto.class
+com\market\marketsearchservice\controller\HealthController.class
+com\market\marketsearchservice\client\HistoricalClient.class
+com\market\marketsearchservice\dto\CandleDto.class
+com\market\marketsearchservice\controller\MarketSearchController.class

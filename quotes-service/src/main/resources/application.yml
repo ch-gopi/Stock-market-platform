@@ -5,6 +5,22 @@ spring:
   application:
     name: quotes-service
 
+
+
+  kafka:
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    properties:
+      spring.json.add.type.headers: false
+
+
+
+quotes:
+  ticks:
+    topic: quotes.ticks
+  symbols: [AAPL, MSFT, NVDA]
+  emit-interval-ms: 2000   # publish every 2 seconds
+
 eureka:
   client:
     service-url:

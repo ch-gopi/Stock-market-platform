@@ -8,38 +8,32 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Map;
+
 @Slf4j
 @Component
 public class AlphaVantageClient {
 
-    @Value("${alphavantage.apikey:demo}")
+    @Value("${alphavantage.apikey}")
     private String apikey;
 
     private final RestTemplate restTemplate = new RestTemplate();
     private static final String BASE_URL = "https://www.alphavantage.co/query";
 
-    public Map<String, Object> getIntraday(String symbol) {
+    public Map<String, Object> getQuote(String symbol) {
         String url = UriComponentsBuilder.fromHttpUrl(BASE_URL)
-                .queryParam("function", "TIME_SERIES_INTRADAY")
-                .queryParam("symbol", symbol)
-                .queryParam("interval", "5min")
-                .queryParam("apikey", apikey)
-                .toUriString();
-
-        return fetch(url);
-    }
-
-    public Map<String, Object> getDaily(String symbol) {
-        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL)
-                .queryParam("function", "TIME_SERIES_DAILY_ADJUSTED")
+                .queryParam("function", "GLOBAL_QUOTE")
                 .queryParam("symbol", symbol)
                 .queryParam("apikey", apikey)
                 .toUriString();
 
-        return fetch(url);
-    }
-
-    private Map<String, Object> fetch(String url) {
         log.info("Calling Alpha Vantage: {}", url);
         try {
             Map<String, Object> response = restTemplate.getForObject(url, Map.class);

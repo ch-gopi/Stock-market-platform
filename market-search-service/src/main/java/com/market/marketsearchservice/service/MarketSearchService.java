@@ -1,58 +1,89 @@
 package com.market.marketsearchservice.service;
 
+import com.market.marketsearchservice.dto.CandleDto;
+import com.market.marketsearchservice.dto.QuoteDto;
 import com.market.marketsearchservice.dto.StockSearchDto;
-import com.market.marketsearchservice.external.AlphaVantageClient;
-import com.market.marketsearchservice.external.YahooFinanceClient;
-import lombok.extern.slf4j.Slf4j;
+
+import com.market.marketsearchservice.entity.StockMeta;
+import com.market.marketsearchservice.repository.StockMetaRepository;
+import com.market.marketsearchservice.client.QuotesClient;
+import com.market.marketsearchservice.client.HistoricalClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Map;
-@Slf4j
+
 @Service
 public class MarketSearchService {
 
-    private final AlphaVantageClient alphaVantageClient;
-    private final YahooFinanceClient yahooFinanceClient;
+    private static final Logger log = LoggerFactory.getLogger(MarketSearchService.class);
 
-    public MarketSearchService(AlphaVantageClient alphaVantageClient, YahooFinanceClient yahooFinanceClient) {
-        this.alphaVantageClient = alphaVantageClient;
-        this.yahooFinanceClient = yahooFinanceClient;
+    private final StockMetaRepository stockMetaRepository;
+    private final QuotesClient quotesClient;
+    private final HistoricalClient historicalClient;
+
+    public MarketSearchService(StockMetaRepository stockMetaRepository,
+                               QuotesClient quotesClient,
+                               HistoricalClient historicalClient) {
+        this.stockMetaRepository = stockMetaRepository;
+        this.quotesClient = quotesClient;
+        this.historicalClient = historicalClient;
     }
 
     public List<StockSearchDto> searchStocks(String keyword) {
+        List<StockMeta> metas = stockMetaRepository.findBySymbolContainingIgnoreCase(keyword);
+        return metas.stream()
+                .map(meta -> new StockSearchDto(
+                        meta.getSymbol(),
+                        meta.getName(),
+                        meta.getType(),
+                        meta.getRegion(),
+                        meta.getMarketOpen(),
+                        meta.getMarketClose(),
+                        meta.getTimezone(),
+                        meta.getCurrency(),
+                        meta.getMatchScore(),
+                        meta.getPrice(),
+                        meta.getChange(),
+                        meta.getChangePercent(),
+                        meta.getVolume(),
+                        meta.getHistoricalPerformance()
+                ))
+                .toList();
+    }
 
-        Map<String, Object> response = alphaVantageClient.searchSymbol(keyword);
 
-        if (response == null || !response.containsKey("bestMatches")) {
-            return List.of();
-        }
+    // Optional sync enrichment (use sparingly)
+    public void enrichNow(String symbol, String range) {
+        StockMeta meta = stockMetaRepository.findById(symbol).orElse(null);
+        if (meta == null) return;
 
-        List<Map<String, String>> matches =
-                (List<Map<String, String>>) response.get("bestMatches");
-
-        List<StockSearchDto> results = new ArrayList<>();
-
-        for (Map<String, String> m : matches) {
-            try {
-                results.add(new StockSearchDto(
-                        m.getOrDefault("1. symbol", ""),
-                        m.getOrDefault("2. name", ""),
-                        m.getOrDefault("3. type", ""),
-                        m.getOrDefault("4. region", ""),
-                        m.getOrDefault("5. marketOpen", ""),
-                        m.getOrDefault("6. marketClose", ""),
-                        m.getOrDefault("7. timezone", ""),
-                        m.getOrDefault("8. currency", ""),
-                        Double.parseDouble(m.getOrDefault("9. matchScore", "0.0"))
-                ));
-            } catch (Exception e) {
-                log.warn("Skipping malformed match: {}", m, e);
+        try {
+            QuoteDto quote = quotesClient.getQuote(symbol);
+            if (quote != null) {
+                meta.setPrice(quote.getPrice());
+                meta.setChange(quote.getChange());
+                meta.setChangePercent(quote.getChangePercent());
+                meta.setVolume(quote.getVolume());
             }
+
+            List<CandleDto> candles = historicalClient.getCandles(symbol, range);
+            if (candles != null && !candles.isEmpty()) {
+                meta.setHistoricalPerformance(calculatePerformance(candles));
+            }
+
+            stockMetaRepository.save(meta);
+        } catch (Exception e) {
+            log.warn("Sync enrichment failed for {}: {}", symbol, e.getMessage());
         }
+    }
 
-
-        return results;
+    private double calculatePerformance(List<CandleDto> candles) {
+        if (candles == null || candles.size() < 2) return 0;
+        double start = candles.get(0).getClose();
+        double end = candles.get(candles.size() - 1).getClose();
+        return start != 0 ? ((end - start) / start) * 100 : 0;
     }
 }

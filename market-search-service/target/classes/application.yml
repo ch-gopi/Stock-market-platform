@@ -7,10 +7,36 @@ spring:
   config:
     import: "optional:configserver:http://localhost:8888"
 
+  datasource:
+    url: jdbc:h2:mem:marketdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # ensures table auto-created from entity
+    show-sql: true
+    defer-datasource-initialization: true
+quotes-service:
+  url: http://localhost:8099
+
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: market-search
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-
-alphavantage:
-  apikey: VBMC8IRO31QQLMZD

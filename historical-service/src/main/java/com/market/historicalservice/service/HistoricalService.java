@@ -1,7 +1,9 @@
 package com.market.historicalservice.service;
 
 import com.market.historicalservice.dto.CandleDto;
-import com.market.historicalservice.external.AlphaVantageClient;
+
+import com.market.historicalservice.dto.QuoteTickEvent;
+import com.market.historicalservice.repository.CandleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +15,7 @@ import java.util.*;
 @Service
 public class HistoricalService {
 
-    private final AlphaVantageClient alphaVantageClient;
 
-    public HistoricalService(AlphaVantageClient alphaVantageClient) {
-        this.alphaVantageClient = alphaVantageClient;
-    }
 /*
     public List<CandleDto> getHistoricalData(String symbol, String range) {
         Map<String, Object> response = alphaVantageClient.getDaily(symbol);
@@ -62,6 +60,28 @@ public class HistoricalService {
         return candles;
     }*/
 
+    private final CandleRepository repository;
+
+    public HistoricalService(CandleRepository repository) {
+        this.repository = repository;
+    }
+
+    public List<CandleDto> getHistoricalData(String symbol, String range) {
+        return repository.findBySymbolAndRange(symbol, range);
+    }
+
+    public void aggregateTick(QuoteTickEvent tick) {
+        CandleDto candle = new CandleDto(
+                tick.getTimestamp(),
+                tick.getPrice(), tick.getPrice(),
+                tick.getPrice(), tick.getPrice(),
+                tick.getVolume()
+        );
+        repository.save(tick.getSymbol(), candle);
+    }
+}
+
+/*
 
     public List<CandleDto> getHistoricalData(String symbol, String range) {
         // Instead of calling AlphaVantageClient, return dummy candles
@@ -73,8 +93,24 @@ public class HistoricalService {
         candles.add(new CandleDto(19622, 284.5, 287.0, 283.0, 285.0, 30000000L));
         candles.add(new CandleDto(19623, 285.0, 288.0, 284.0, 287.0, 29000000L));
         candles.add(new CandleDto(19624, 287.0, 289.0, 286.0, 288.5, 28000000L));
+        candles.add(new CandleDto(19625, 288.5, 291.0, 287.0, 290.0, 27000000L));
+        candles.add(new CandleDto(19626, 290.0, 293.0, 289.0, 292.5, 26000000L));
+        candles.add(new CandleDto(19627, 292.5, 294.0, 291.0, 293.0, 25000000L));
+        candles.add(new CandleDto(19628, 293.0, 295.0, 292.0, 294.5, 24000000L));
+        candles.add(new CandleDto(19629, 294.5, 296.0, 293.0, 295.0, 23000000L));
+        candles.add(new CandleDto(19630, 295.0, 297.0, 294.0, 296.5, 22000000L));
+        candles.add(new CandleDto(19631, 296.5, 298.0, 295.0, 297.0, 21000000L));
+        candles.add(new CandleDto(19632, 297.0, 299.0, 296.0, 298.5, 20000000L));
+        candles.add(new CandleDto(19633, 298.5, 300.0, 297.0, 299.0, 19000000L));
+        candles.add(new CandleDto(19634, 299.0, 301.0, 298.0, 300.5, 18000000L));
+        candles.add(new CandleDto(19635, 300.5, 302.0, 299.0, 301.0, 17000000L));
+        candles.add(new CandleDto(19636, 301.0, 303.0, 300.0, 302.5, 16000000L));
+        candles.add(new CandleDto(19637, 302.5, 304.0, 301.0, 303.0, 15000000L));
+        candles.add(new CandleDto(19638, 303.0, 305.0, 302.0, 304.5, 14000000L));
+        candles.add(new CandleDto(19639, 304.5, 306.0, 303.0, 305.0, 13000000L));
 
         return candles;
     }
 
 }
+*/
