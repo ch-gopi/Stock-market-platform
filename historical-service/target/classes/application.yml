@@ -5,6 +5,7 @@ spring:
   application:
     name: historical-service
 
+
   kafka:
     consumer:
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer

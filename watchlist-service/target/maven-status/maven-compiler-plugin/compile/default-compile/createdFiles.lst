@@ -1,12 +1,16 @@
+com\market\watchlistservice\config\KafkaConsumerConfig.class
 com\market\watchlistservice\entity\WatchlistEntry$WatchlistEntryBuilder.class
 com\market\watchlistservice\watchlistserviceApplication.class
 com\market\watchlistservice\external\YahooFinanceClient.class
 com\market\watchlistservice\controller\WatchlistController.class
+com\market\watchlistservice\service\NotificationService.class
+com\market\watchlistservice\consumer\QuoteTickConsumer.class
 com\market\watchlistservice\entity\WatchlistEntry.class
+com\market\watchlistservice\client\QuotesClient.class
 com\market\watchlistservice\controller\HealthController.class
 com\market\watchlistservice\repository\WatchlistRepository.class
 com\market\watchlistservice\dto\QuoteDto.class
 com\market\watchlistservice\external\AlphaVantageClient.class
 com\market\watchlistservice\service\WatchlistService.class
-com\market\watchlistservice\service\QuotesClient.class
+com\market\watchlistservice\dto\QuoteTickEvent.class
 com\market\watchlistservice\dto\WatchlistItemDto.class

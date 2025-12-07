@@ -1,0 +1,14 @@
+com\market\userservice\entity\User.class
+com\market\userservice\service\UserService.class
+com\market\userservice\controller\AuthController.class
+com\market\userservice\entity\User$UserBuilder.class
+com\market\userservice\security\SecurityConfig.class
+com\market\userservice\userserviceApplication.class
+com\market\userservice\dto\TokenResponse.class
+com\market\userservice\dto\AuthResponse.class
+com\market\userservice\security\JwtAuthFilter.class
+com\market\userservice\service\JwtService.class
+com\market\userservice\dto\RegisterRequest.class
+com\market\userservice\controller\HealthController.class
+com\market\userservice\dto\AuthRequest.class
+com\market\userservice\repository\UserRepository.class

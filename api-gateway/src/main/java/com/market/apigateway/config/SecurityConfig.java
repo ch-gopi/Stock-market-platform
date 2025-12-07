@@ -12,9 +12,12 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
+import org.springframework.web.cors.CorsConfiguration;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
+import java.util.List;
+
 @Configuration
 @EnableWebFluxSecurity
 @Slf4j
@@ -23,11 +26,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http
+        http       .cors(cors -> cors.configurationSource(exchange -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(List.of("http://localhost:5173"));
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setAllowCredentials(true);
+                    return config;
+                }))
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/auth/**").permitAll() // only /auth/** is public
-                        .anyExchange().authenticated()        // everything else needs a JWT
+                                .pathMatchers("/auth/register", "/auth/login").permitAll()
+                                .pathMatchers("/auth/me").authenticated()
+                                .anyExchange().authenticated()
+
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
