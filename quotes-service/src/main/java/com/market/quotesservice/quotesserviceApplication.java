@@ -9,7 +9,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableDiscoveryClient
 @RefreshScope
 @EnableFeignClients
-
 @SpringBootApplication
 public class quotesserviceApplication {
     public static void main(String[] args) {

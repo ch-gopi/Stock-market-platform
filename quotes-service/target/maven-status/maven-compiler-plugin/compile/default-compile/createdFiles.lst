@@ -1,0 +1,13 @@
+com\market\quotesservice\service\QuotesService.class
+com\market\quotesservice\config\SchedulingConfig.class
+com\market\quotesservice\controller\QuotesController.class
+com\market\quotesservice\service\TickPublisher.class
+com\market\quotesservice\service\TickGenerator.class
+com\market\quotesservice\config\KafkaProducerConfig.class
+com\market\quotesservice\dto\QuoteTickEvent.class
+com\market\quotesservice\external\AlphaVantageClient.class
+com\market\quotesservice\quotesserviceApplication.class
+com\market\quotesservice\controller\HealthController.class
+com\market\quotesservice\dto\QuoteDto.class
+com\market\quotesservice\dto\QuoteTickEvent$QuoteTickEventBuilder.class
+com\market\quotesservice\external\YahooFinanceClient.class

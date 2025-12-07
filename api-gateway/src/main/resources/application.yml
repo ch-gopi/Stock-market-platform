@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   application:
@@ -11,25 +11,43 @@ spring:
         - id: market-search
           uri: lb://market-search-service
           predicates:
-            - Path=/search/**
+            - Path=/search, /search/**
+          filters:
+            - StripPrefix=0
+
         - id: quotes-service
           uri: lb://quotes-service
           predicates:
             - Path=/quotes/**
+          filters:
+            - StripPrefix=0
+
         - id: historical-service
           uri: lb://historical-service
           predicates:
             - Path=/historical/**
+          filters:
+            - StripPrefix=0
+
         - id: watchlist-service
           uri: lb://watchlist-service
           predicates:
             - Path=/watchlist/**
+          filters:
+            - StripPrefix=0
+
         - id: user-service
           uri: lb://user-service
           predicates:
-            - Path=/users/**
+            - Path=/auth/**
+          filters:
+            - StripPrefix=0
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+jwt:
+  secret: 2c1dXSuXoU0H4nQ9vN7gK2dZ9wL8fY6pJ1rV2bT6oP8=
+  expiration: 86400000   # 1 day
