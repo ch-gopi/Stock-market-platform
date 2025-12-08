@@ -43,5 +43,6 @@ eureka:
   instance:
     hostname: localhost
     prefer-ip-address: false
-
+alphavantage:
+  apikey: VBMC8IRO31QQLMZD
 
