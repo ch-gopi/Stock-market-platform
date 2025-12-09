@@ -1,6 +1,8 @@
 package com.market.userservice.controller;
 
 import com.market.userservice.dto.AuthRequest;
+import com.market.userservice.entity.User;
+import com.market.userservice.repository.UserRepository;
 import com.market.userservice.service.JwtService;
 import com.market.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -25,6 +26,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserService userService;
+    private final UserRepository repo;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest request) {
@@ -39,7 +41,7 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
             UserDetails user = (UserDetails) auth.getPrincipal();
-            String token = jwtService.generateToken(user);
+            String token = jwtService.generateToken((User) user);
 
             return ResponseEntity.ok(Map.of("username", user.getUsername(), "token", token));
         } catch (AuthenticationException ex) {
@@ -61,6 +63,9 @@ public class AuthController {
 
         return Mono.just(userInfo);
     }
+
+
+
 
 
 }

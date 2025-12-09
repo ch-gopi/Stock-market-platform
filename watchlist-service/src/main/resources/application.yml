@@ -4,7 +4,16 @@ server:
 spring:
   application:
     name: watchlist-service
+user:
+  service:
+    url: localhost:8096   # or whatever port your user-service runs on
 
+  redis:
+    host: localhost
+    port: 6379
+jwt:
+  secret: 2c1dXSuXoU0H4nQ9vN7gK2dZ9wL8fY6pJ1rV2bT6oP8=
+  expiration: 86400000   # 1 day
 
   datasource:
     url: jdbc:postgresql://localhost:5432/watchlistdb

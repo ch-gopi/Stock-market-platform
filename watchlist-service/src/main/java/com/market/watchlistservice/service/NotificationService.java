@@ -6,7 +6,6 @@ import com.market.watchlistservice.repository.WatchlistRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 @Service
 public class NotificationService {
     private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
@@ -18,10 +17,21 @@ public class NotificationService {
 
     public void notifyUsers(QuoteTickEvent event) {
         var users = repository.findBySymbol(event.getSymbol());
-        for (WatchlistEntry user : users) {
-            log.info("Notify {}: {} price={}, change={}%", user,
-                    event.getSymbol(), event.getPrice(), event.getChangePercent());
+        for (WatchlistEntry entry : users) {
+            double percent = 0.0;
+            try {
+                percent = Double.parseDouble(event.getChangePercent()
+                        .replace("%", "")
+                        .trim());
+            } catch (NumberFormatException e) {
+                log.warn("Invalid changePercent={} for symbol={}", event.getChangePercent(), event.getSymbol());
+            }
+
+            log.info("Notify user={} | symbol={} | price={} | changePercent={:.2f}%",
+                    entry.getUserId(),
+                    event.getSymbol(),
+                    event.getPrice(),
+                    percent);
         }
     }
-
 }
