@@ -11,10 +11,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuoteTickEvent {
-    private String symbol;
-    private double price;
-    private double change;
-    private double changePercent;
-    private long volume;
-    private long timestamp;
-}
+        private String symbol;
+        private double open;
+        private double high;
+        private double low;
+        private double price;
+        private long volume;
+        private String latestTradingDay;
+        private double previousClose;
+        private double change;
+        private String changePercent;
+
+    }

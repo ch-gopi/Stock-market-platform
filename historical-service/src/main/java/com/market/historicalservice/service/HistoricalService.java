@@ -71,14 +71,22 @@ public class HistoricalService {
     }
 
     public void aggregateTick(QuoteTickEvent tick) {
+        // Use trading day as timestamp anchor
+        long timestamp = System.currentTimeMillis();
+
+        // Build candle using tick fields
         CandleDto candle = new CandleDto(
-                tick.getTimestamp(),
-                tick.getPrice(), tick.getPrice(),
-                tick.getPrice(), tick.getPrice(),
-                tick.getVolume()
+                timestamp,
+                tick.getOpen(),          // open
+                tick.getHigh(),          // high
+                tick.getLow(),           // low
+                tick.getPrice(),         // close (latest price)
+                tick.getVolume()         // volume
         );
+
         repository.save(tick.getSymbol(), candle);
     }
+
 }
 
 /*
