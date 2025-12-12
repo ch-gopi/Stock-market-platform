@@ -6,6 +6,9 @@ spring:
     name: market-search-service
   config:
     import: "optional:configserver:http://localhost:8888"
+finnhub:
+  api:
+    key: d4se4apr01qvsjbh6j00d4se4apr01qvsjbh6j0g
 
   datasource:
     url: jdbc:postgresql://localhost:5432/marketsearchdb

@@ -12,5 +12,5 @@ public class QuoteDto {
     private double price;
     private double change;
     private double changePercent;
-    private long volume;
+    private double volume;
 }

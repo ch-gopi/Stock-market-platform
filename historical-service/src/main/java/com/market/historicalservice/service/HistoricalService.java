@@ -7,8 +7,10 @@ import com.market.historicalservice.repository.CandleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Slf4j
@@ -60,17 +62,17 @@ public class HistoricalService {
         return candles;
     }*/
 
-    private final CandleRepository repository;
+    private final CandleRepository candleRepository;
 
-    public HistoricalService(CandleRepository repository) {
-        this.repository = repository;
+    public HistoricalService(CandleRepository repository, CandleRepository candleRepository) {
+        this.candleRepository = candleRepository;
     }
-
+/*
     public List<CandleDto> getHistoricalData(String symbol, String range) {
-        return repository.findBySymbolAndRange(symbol, range);
-    }
+        return candleRepository.findBySymbolAndRange(symbol, range);
+    }*/
 
-    public void aggregateTick(QuoteTickEvent tick) {
+/*    public void aggregateTick(QuoteTickEvent tick) {
         // Use trading day as timestamp anchor
         long timestamp = System.currentTimeMillis();
 
@@ -84,7 +86,42 @@ public class HistoricalService {
                 tick.getVolume()         // volume
         );
 
-        repository.save(tick.getSymbol(), candle);
+        candleRepository.save(tick.getSymbol(), candle);
+    }*/
+
+    public List<CandleDto> getCandles(String symbol, String range) {
+        long now = Instant.now().toEpochMilli();
+        long from;
+
+        switch (range) {
+
+                case "1d":
+                    from = Instant.now().minus(1, ChronoUnit.DAYS).toEpochMilli();
+                    break;
+                case "1w":
+                    from = Instant.now().minus(7, ChronoUnit.DAYS).toEpochMilli();
+                    break;
+                case "1m":
+                    from = Instant.now().minus(30, ChronoUnit.DAYS).toEpochMilli();
+                    break;
+                case "3m":
+                    from = Instant.now().minus(90, ChronoUnit.DAYS).toEpochMilli();
+                    break;
+                case "6m":
+                    from = Instant.now().minus(180, ChronoUnit.DAYS).toEpochMilli();
+                    break;
+                case "1y":
+                    from = Instant.now().minus(365, ChronoUnit.DAYS).toEpochMilli();
+                    break;
+                case "5y":
+                    from = Instant.now().minus(5, ChronoUnit.YEARS).toEpochMilli();
+                    break;
+                default:
+                    from = Instant.now().minus(1, ChronoUnit.DAYS).toEpochMilli();
+            }
+
+
+            return candleRepository.findBySymbolAndTimestampBetween(symbol, from, now);
     }
 
 }

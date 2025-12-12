@@ -1,3 +1,4 @@
+/*
 package com.market.quotesservice.service;
 
 
@@ -22,3 +23,4 @@ public class TickPublisher {
         kafkaTemplate.send(topic, event.getSymbol(), event);
     }
 }
+*/

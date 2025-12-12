@@ -1,3 +1,4 @@
+/*
 package com.market.watchlistservice.service;
 
 import com.market.watchlistservice.dto.QuoteTickEvent;
@@ -20,3 +21,4 @@ public class QuoteCache {
         return redisTemplate.opsForValue().get(symbol);
     }
 }
+*/

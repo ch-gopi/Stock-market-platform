@@ -1,4 +1,5 @@
 package com.market.watchlistservice.controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.market.watchlistservice.dto.WatchlistItemDto;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/watchlist")
 public class WatchlistController {
@@ -25,19 +27,14 @@ public class WatchlistController {
         return service.getUserWatchlist(userId);
     }
 
-
-
-    // ✅ Add symbol to watchlist (userId + symbol come from request body)
     @PostMapping
-    public String add(@RequestBody WatchlistEntry entry) {
-        service.addToWatchlist(entry.getUserId(), entry.getSymbol().toUpperCase());
-        return "Added";
+    public WatchlistItemDto add(@RequestBody WatchlistEntry entry) {
+        return service.addToWatchlist(entry.getUserId(), entry.getSymbol().toUpperCase());
     }
 
-    // ✅ Remove symbol from watchlist
     @DeleteMapping
-    public String delete(@RequestBody WatchlistEntry entry) {
+    public ResponseEntity<String> delete(@RequestBody WatchlistEntry entry) {
         service.removeFromWatchlist(entry.getUserId(), entry.getSymbol().toUpperCase());
-        return "Removed";
+        return ResponseEntity.ok("Removed");
     }
 }

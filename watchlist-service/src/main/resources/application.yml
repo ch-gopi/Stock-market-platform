@@ -4,16 +4,15 @@ server:
 spring:
   application:
     name: watchlist-service
-user:
-  service:
-    url: localhost:8096   # or whatever port your user-service runs on
+
+  cloud:
+    gateway:
+      default-filters:
+        - TokenRelay
 
   redis:
     host: localhost
     port: 6379
-jwt:
-  secret: 2c1dXSuXoU0H4nQ9vN7gK2dZ9wL8fY6pJ1rV2bT6oP8=
-  expiration: 86400000   # 1 day
 
   datasource:
     url: jdbc:postgresql://localhost:5432/watchlistdb
@@ -29,16 +28,6 @@ jwt:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-    register-with-eureka: true
-    fetch-registry: true
-  instance:
-    prefer-ip-address: false
-    hostname: localhost
-
   kafka:
     consumer:
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
@@ -49,5 +38,28 @@ eureka:
 
   config:
     import: "optional:configserver:http://localhost:8888"
+
+user:
+  service:
+    url: localhost:8096   # or whatever port your user-service runs on
+
+finnhub:
+  api:
+    key: d4se4apr01qvsjbh6j00d4se4apr01qvsjbh6j0g
+
+jwt:
+  secret: 2c1dXSuXoU0H4nQ9vN7gK2dZ9wL8fY6pJ1rV2bT6oP8=
+  expiration: 86400000   # 1 day
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: false
+    hostname: localhost
+
 alphavantage:
   apikey: VBMC8IRO31QQLMZD

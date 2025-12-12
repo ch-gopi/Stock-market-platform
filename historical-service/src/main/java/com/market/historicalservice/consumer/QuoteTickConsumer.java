@@ -13,9 +13,9 @@ public class QuoteTickConsumer {
     public QuoteTickConsumer(HistoricalService historicalService) {
         this.historicalService = historicalService;
     }
-
+/*
     @KafkaListener(topics = "quotes.ticks", groupId = "historical-service")
     public void consume(QuoteTickEvent event) {
         historicalService.aggregateTick(event);
-    }
+    }*/
 }

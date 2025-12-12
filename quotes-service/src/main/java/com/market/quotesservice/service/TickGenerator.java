@@ -1,3 +1,4 @@
+/*
 package com.market.quotesservice.service;
 
 
@@ -53,3 +54,4 @@ public class TickGenerator {
         }
     }
 }
+*/

@@ -10,6 +10,7 @@
         <module name="market-search-service" />
         <module name="quotes-service" />
         <module name="config-server" />
+        <module name="quotes-common" />
         <module name="api-gateway" />
         <module name="user-service" />
         <module name="watchlist-service" />

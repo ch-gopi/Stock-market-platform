@@ -1,5 +1,6 @@
 package com.market.watchlistservice.config;
 
+import com.market.common.dto.FinQuoteTickEvent;
 import com.market.watchlistservice.dto.QuoteTickEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -7,41 +8,41 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
 import java.util.Map;
-
-@EnableKafka
 @Configuration
 public class KafkaConsumerConfig {
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, QuoteTickEvent> kafkaListenerContainerFactory() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "watchlist-service");
+    public ConsumerFactory<String, FinQuoteTickEvent> consumerFactory() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "watchlist-service"); // 👈 unique group id
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+                org.springframework.kafka.support.serializer.ErrorHandlingDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+                org.springframework.kafka.support.serializer.ErrorHandlingDeserializer.class);
 
-        // Wrap deserialization in ErrorHandlingDeserializer
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+        config.put("spring.deserializer.key.delegate.class", StringDeserializer.class);
+        config.put("spring.deserializer.value.delegate.class", JsonDeserializer.class);
 
-        // Delegate actual deserialization
-        props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
-        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
+        config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, FinQuoteTickEvent.class);
 
-        // JsonDeserializer settings
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.market.watchlistservice.dto.QuoteTickEvent");
-        props.put(JsonDeserializer.REMOVE_TYPE_INFO_HEADERS, true);
-        props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        return new DefaultKafkaConsumerFactory<>(config);
+    }
 
-        DefaultKafkaConsumerFactory<String, QuoteTickEvent> cf = new DefaultKafkaConsumerFactory<>(props);
-
-        ConcurrentKafkaListenerContainerFactory<String, QuoteTickEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(cf);
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, FinQuoteTickEvent> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, FinQuoteTickEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
         return factory;
     }
 }

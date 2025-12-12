@@ -28,8 +28,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers( "/auth/login","/auth/register").permitAll()
+
                         .requestMatchers("/auth/me").authenticated()
                         .anyRequest().authenticated()
                 )

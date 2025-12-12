@@ -18,7 +18,7 @@ public class QuotesService {
         this.alphaVantageClient = alphaVantageClient;
     }
 
-    public QuoteDto getLiveQuote(String symbol) {
+    public QuoteDto getQuote(String symbol) {
         Map<String, Object> response = alphaVantageClient.getQuote(symbol);
 
         if (response == null || !response.containsKey("Global Quote")) {

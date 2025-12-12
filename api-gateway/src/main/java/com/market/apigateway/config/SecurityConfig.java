@@ -36,11 +36,14 @@ public class SecurityConfig {
                 }))
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-                                .pathMatchers("/auth/register", "/auth/login").permitAll()
-                                .pathMatchers("/auth/me").authenticated()
-                                .anyExchange().authenticated()
-
+                        .pathMatchers("/auth/register", "/auth/login").permitAll()
+                        .pathMatchers("/ws-quotes/**").permitAll()   //  allow handshake
+                        .pathMatchers("/auth/me").authenticated()
+                        .anyExchange().authenticated()
                 )
+
+
+
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
