@@ -8,7 +8,7 @@ import com.market.quotesservice.service.QuotesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-@CrossOrigin(origins = "http://localhost:5173")
+
 @RestController
 @RequestMapping("/quotes")
 public class QuotesController {

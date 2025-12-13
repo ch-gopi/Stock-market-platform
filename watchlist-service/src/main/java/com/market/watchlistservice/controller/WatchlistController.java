@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@CrossOrigin(origins = "http://localhost:5173")
+
 @RestController
 @RequestMapping("/watchlist")
 public class WatchlistController {
@@ -29,7 +29,7 @@ public class WatchlistController {
 
     @PostMapping
     public WatchlistItemDto add(@RequestBody WatchlistEntry entry) {
-        return service.addToWatchlist(entry.getUserId(), entry.getSymbol().toUpperCase());
+        return service.addToWatchlist(entry.getUserId(), entry.getSymbol());
     }
 
     @DeleteMapping

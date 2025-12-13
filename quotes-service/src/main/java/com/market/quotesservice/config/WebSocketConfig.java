@@ -10,11 +10,11 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final JwtChannelInterceptor jwtChannelInterceptor;
+//    private final JwtChannelInterceptor jwtChannelInterceptor;
 
-    public WebSocketConfig(JwtChannelInterceptor jwtChannelInterceptor) {
-    this.jwtChannelInterceptor = jwtChannelInterceptor;
-    }
+//    public WebSocketConfig(JwtChannelInterceptor jwtChannelInterceptor) {
+//    this.jwtChannelInterceptor = jwtChannelInterceptor;
+//    }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -25,13 +25,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-quotes")
-                .setAllowedOrigins("http://localhost:5173")
-                .withSockJS();
+                .setAllowedOrigins("http://localhost:5173");
+/*                .withSockJS();*/
     }
-
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        // Hook in the interceptor
-        registration.interceptors(jwtChannelInterceptor);
-    }
+//
+//    @Override
+//    public void configureClientInboundChannel(ChannelRegistration registration) {
+//        // Hook in the interceptor
+////        registration.taskExecutor().keepAliveSeconds(10);
+//        registration.interceptors(jwtChannelInterceptor);
+//    }
 }

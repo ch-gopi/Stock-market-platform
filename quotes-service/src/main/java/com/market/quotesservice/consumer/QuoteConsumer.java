@@ -2,6 +2,7 @@ package com.market.quotesservice.consumer;
 
 import com.market.common.dto.FinQuoteTickEvent;   // from quotes-common
 import com.market.quotesservice.dto.QuoteDto;     // new class you just created
+import com.market.quotesservice.service.NotificationService;
 import com.market.quotesservice.service.QuoteCacheService; // new service you just created
 
 import org.slf4j.Logger;
@@ -20,11 +21,14 @@ public class QuoteConsumer {
 
     private final QuoteCacheService quoteCacheService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final NotificationService notificationService;
 
     public QuoteConsumer(QuoteCacheService quoteCacheService,
-                         SimpMessagingTemplate messagingTemplate) {
+                         SimpMessagingTemplate messagingTemplate,NotificationService notificationService) {
         this.quoteCacheService = quoteCacheService;
         this.messagingTemplate = messagingTemplate;
+        this.notificationService = notificationService;
+
     }
 
     @KafkaListener(topics = "quotes.ticks", groupId = "quotes-service",
@@ -34,12 +38,13 @@ public class QuoteConsumer {
 
         // Store in Redis
         quoteCacheService.saveLatestTick(event);
-        log.info("Consumed tick: {}", event);
+        notificationService.notifyUsers(event);
 
         // Compute change metrics
         double prevClose = quoteCacheService.getPreviousClose(event.getSymbol());
         double change = event.getPrice() - prevClose;
         double changePercent = prevClose != 0 ? (change / prevClose) * 100 : 0;
+
 
         QuoteDto dto = new QuoteDto(
                 event.getSymbol(),

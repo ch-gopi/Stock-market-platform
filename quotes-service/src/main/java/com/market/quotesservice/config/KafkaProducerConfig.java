@@ -1,3 +1,4 @@
+/*
 package com.market.quotesservice.config;
 
 
@@ -39,3 +40,4 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(producerFactory());
     }
 }
+*/

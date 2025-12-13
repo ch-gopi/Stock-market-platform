@@ -71,12 +71,13 @@ public class PreviousCloseUpdater {
         try {
             ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                Double previousClose = (Double) response.getBody().get("pc");
-                if (previousClose != null) {
+                Object raw = response.getBody().get("pc");
+                if (raw instanceof Number num) {
+                    double previousClose = num.doubleValue();
                     quoteCacheService.savePreviousClose(symbol, previousClose);
                     log.info("Updated previous close for {} = {}", symbol, previousClose);
                 } else {
-                    log.warn("No previous close value returned for {}", symbol);
+                    log.warn("No valid previous close value returned for {}", symbol);
                 }
             }
         } catch (Exception e) {

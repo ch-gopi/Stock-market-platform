@@ -1,3 +1,4 @@
+/*
 package com.market.quotesservice.config;
 
 import org.springframework.messaging.Message;
@@ -33,3 +34,4 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
         return message;
     }
 }
+*/

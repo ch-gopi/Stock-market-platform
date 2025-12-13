@@ -5,26 +5,27 @@ spring:
   application:
     name: api-gateway
 
-
   cloud:
     gateway:
       websocket:
         enabled: true
       routes:
-        - id: market-search
-          uri: lb://market-search-service
+        - id: watchlist-ws
+          uri: lb://watchlist-service
           predicates:
-            - Path=/search, /search/**
-          filters:
-            - StripPrefix=0
+           - Path=/ws-watchlist/**
         - id: quotes-ws
           uri: lb://quotes-service
           predicates:
             - Path=/ws-quotes/**
-        - id: watchlist-ws
-          uri: lb://watchlist-service
+
+        - id: market-search
+          uri: lb://market-search-service
           predicates:
-            - Path=/ws-watchlist/**
+           - Path=/search, /search/**
+          filters:
+            - StripPrefix=0
+
 
         - id: quotes-service
           uri: lb://quotes-service
@@ -32,6 +33,7 @@ spring:
             - Path=/quotes/**
           filters:
             - StripPrefix=0
+
 
         - id: historical-service
           uri: lb://historical-service

@@ -25,29 +25,25 @@ public class WatchlistService {
     }
 
     public List<WatchlistItemDto> getUserWatchlist(Long userId) {
-        List<WatchlistEntry> items = repo.findByUserId(userId);
-        List<WatchlistItemDto> response = new ArrayList<>();
-
-        for (WatchlistEntry item : items) {
-            response.add(buildDto(item.getSymbol()));
-        }
-        return response;
+        return repo.findByUserId(userId).stream()
+                .map(item -> buildDto(item.getSymbol()))
+                .toList();
     }
 
     public WatchlistItemDto addToWatchlist(Long userId, String symbol) {
-        WatchlistEntry entry = repo.findByUserId(userId).stream()
-                .filter(e -> e.getSymbol().equalsIgnoreCase(symbol))
-                .findFirst()
-                .orElse(null);
+        String normalized = symbol.toUpperCase();
 
-        if (entry == null) {
-            entry = new WatchlistEntry();
-            entry.setUserId(userId);
-            entry.setSymbol(symbol.toUpperCase());
-            repo.save(entry);
-        }
+        repo.findByUserIdAndSymbolIgnoreCase(userId, normalized)
+                .orElseGet(() -> {
+                    WatchlistEntry entry = new WatchlistEntry();
+                    entry.setUserId(userId);
+                    entry.setSymbol(normalized);
+                    repo.save(entry);
+                    return entry;
+                });
 
-        return buildDto(entry.getSymbol());
+        //  Always return enriched DTO
+        return buildDto(normalized);
     }
 
     public void removeFromWatchlist(Long userId, String symbol) {
@@ -62,7 +58,6 @@ public class WatchlistService {
         FinQuoteTickEvent tick = quoteCache.getLatestTick(symbol);
         double prevClose = quoteCache.getPreviousClose(symbol);
 
-        // Feign call to historical-service
         List<CandleDto> history = historicalClient.getHistory(symbol, "1m");
         List<Double> sparkline = history.stream()
                 .map(CandleDto::getClose)

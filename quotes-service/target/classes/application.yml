@@ -28,6 +28,7 @@ spring:
 
 jwt:
   secret: 2c1dXSuXoU0H4nQ9vN7gK2dZ9wL8fY6pJ1rV2bT6oP8=
+  expiration: 86400000
   config:
     import: "optional:configserver:http://localhost:8888"
 
