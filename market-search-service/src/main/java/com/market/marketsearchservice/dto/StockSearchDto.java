@@ -1,12 +1,12 @@
 package com.market.marketsearchservice.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class StockSearchDto {
     private String symbol;
     private String name;
@@ -16,6 +16,5 @@ public class StockSearchDto {
     private String marketClose;
     private String timezone;
     private String currency;
-    private double matchScore;
-
+    private Double matchScore;
 }
