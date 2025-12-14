@@ -2,7 +2,6 @@ package com.market.quotesservice.consumer;
 
 import com.market.common.dto.FinQuoteTickEvent;   // from quotes-common
 import com.market.quotesservice.dto.QuoteDto;     // new class you just created
-import com.market.quotesservice.service.NotificationService;
 import com.market.quotesservice.service.QuoteCacheService; // new service you just created
 
 import org.slf4j.Logger;
@@ -21,13 +20,12 @@ public class QuoteConsumer {
 
     private final QuoteCacheService quoteCacheService;
     private final SimpMessagingTemplate messagingTemplate;
-    private final NotificationService notificationService;
 
     public QuoteConsumer(QuoteCacheService quoteCacheService,
-                         SimpMessagingTemplate messagingTemplate,NotificationService notificationService) {
+                         SimpMessagingTemplate messagingTemplate) {
         this.quoteCacheService = quoteCacheService;
         this.messagingTemplate = messagingTemplate;
-        this.notificationService = notificationService;
+
 
     }
 
@@ -38,7 +36,6 @@ public class QuoteConsumer {
 
         // Store in Redis
         quoteCacheService.saveLatestTick(event);
-        notificationService.notifyUsers(event);
 
         // Compute change metrics
         double prevClose = quoteCacheService.getPreviousClose(event.getSymbol());

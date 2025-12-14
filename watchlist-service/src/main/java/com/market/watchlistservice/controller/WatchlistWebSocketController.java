@@ -1,24 +1,10 @@
 package com.market.watchlistservice.controller;
 
 
-import com.market.common.dto.FinQuoteTickEvent;
-import com.market.watchlistservice.dto.QuoteDto;
 import com.market.watchlistservice.dto.WatchlistItemDto;
-import com.market.watchlistservice.service.QuoteCacheService;
 import com.market.watchlistservice.service.WatchlistService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.List;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
