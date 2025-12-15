@@ -9,7 +9,9 @@ spring:
 finnhub:
   api:
     key: d4se4apr01qvsjbh6j00d4se4apr01qvsjbh6j0g
-
+  redis:
+    host: localhost
+    port: 6379
   datasource:
     url: jdbc:postgresql://localhost:5432/marketsearchdb
     username: postgres

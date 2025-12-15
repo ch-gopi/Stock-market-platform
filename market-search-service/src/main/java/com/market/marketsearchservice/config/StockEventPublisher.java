@@ -1,4 +1,4 @@
-package com.market.marketsearchservice.kafka;
+package com.market.marketsearchservice.config;
 
 
 

@@ -2,7 +2,7 @@ package com.market.marketsearchservice.service;
 
 
 
-import com.market.marketsearchservice.kafka.StockEventPublisher;
+import com.market.marketsearchservice.config.StockEventPublisher;
 import com.market.marketsearchservice.repository.StockMetaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
