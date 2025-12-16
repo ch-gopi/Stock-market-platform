@@ -3081,3 +3081,6 @@ com.netflix.discovery.shared.transport.TransportException: Cannot execute reques
 2025-12-16T21:04:43.045+05:30  INFO 54208 --- [market-search-service] [http-nio-8090-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2025-12-16T21:04:43.046+05:30  INFO 54208 --- [market-search-service] [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2025-12-16T21:04:43.049+05:30  INFO 54208 --- [market-search-service] [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2025-12-16T21:08:07.416+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-16T21:08:08.919+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-16T21:12:09.026+05:30  INFO 54208 --- [market-search-service] [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-market-search-1, groupId=market-search] Node -1 disconnected.
