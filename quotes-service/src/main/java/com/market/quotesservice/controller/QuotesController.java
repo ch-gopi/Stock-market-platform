@@ -28,15 +28,23 @@ public class QuotesController {
 
 
 
-        FinQuoteTickEvent tick = cacheService.getLatestTick(symbol);
-        if (tick == null) {
+//        FinQuoteTickEvent tick = cacheService.getLatestTick(symbol);
+   /*     if (tick == null) {
             return ResponseEntity.noContent().build(); // 204 if no data
+        }*/
+        FinQuoteTickEvent tick = cacheService.getLatestTick(symbol);
+        Double previousClose = cacheService.getPreviousClose(symbol);
+
+        if (tick == null) {
+            QuoteDto quoteDto = quoteService.getTick(symbol);
+            return ResponseEntity.ok(quoteDto);
         }
 
-        Double previousClose = cacheService.getPreviousClose(symbol);
-        if (previousClose == null || tick==null) {
-           QuoteDto quoteDto= quoteService.getTick(symbol);
-           return  ResponseEntity.ok(quoteDto);}
+        if (previousClose == null) {
+            QuoteDto quoteDto = quoteService.getTick(symbol);
+            return ResponseEntity.ok(quoteDto);
+        }
+
 
 
         double change = tick.getPrice() - previousClose;

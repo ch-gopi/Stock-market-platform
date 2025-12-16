@@ -99,7 +99,34 @@
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
     </dependency>
-    <dependency>
+          <!-- Resilience4j core -->
+          <dependency>
+              <groupId>io.github.resilience4j</groupId>
+              <artifactId>resilience4j-spring-boot3</artifactId>
+              <version>2.2.0</version>
+          </dependency>
+
+          <!-- Optional: for annotations like @CircuitBreaker, @Retry -->
+          <dependency>
+              <groupId>io.github.resilience4j</groupId>
+              <artifactId>resilience4j-spring-boot3</artifactId>
+              <version>2.2.0</version>
+          </dependency>
+
+          <!-- Optional: Micrometer metrics integration -->
+          <dependency>
+              <groupId>io.github.resilience4j</groupId>
+              <artifactId>resilience4j-micrometer</artifactId>
+              <version>2.2.0</version>
+          </dependency>
+
+          <!-- Optional: Prometheus metrics export -->
+          <dependency>
+              <groupId>io.micrometer</groupId>
+              <artifactId>micrometer-registry-prometheus</artifactId>
+          </dependency>
+
+      <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <optional>true</optional>

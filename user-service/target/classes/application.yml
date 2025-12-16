@@ -5,6 +5,13 @@ spring:
   application:
     name: user-service
 
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-history: 7
+      max-file-size: 5MB
 
 
   datasource:

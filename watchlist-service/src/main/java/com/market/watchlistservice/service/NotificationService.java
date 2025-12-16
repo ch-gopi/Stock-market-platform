@@ -6,6 +6,7 @@ import com.market.watchlistservice.dto.QuoteTickEvent;
 import com.market.watchlistservice.dto.WatchlistItemDto;
 import com.market.watchlistservice.entity.WatchlistEntry;
 import com.market.watchlistservice.repository.WatchlistRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Slf4j
 @Service
 public class NotificationService {
 
-    private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
 
     private final WatchlistRepository repository;
     private final WatchlistService watchlistService;

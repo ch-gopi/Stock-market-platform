@@ -1,5 +1,6 @@
 package com.market.quotesservice.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,11 +22,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
-
+@Slf4j
 @Service
 public class PreviousCloseUpdater {
 
-    private static final Logger log = LoggerFactory.getLogger(PreviousCloseUpdater.class);
 
     private final QuoteCacheService quoteCacheService;
     private final RestTemplate restTemplate;

@@ -9,6 +9,7 @@ import com.market.marketsearchservice.external.AlphaVantageClient;
 import com.market.marketsearchservice.repository.StockMetaRepository;
 import com.market.marketsearchservice.client.QuotesClient;
 import com.market.marketsearchservice.client.HistoricalClient;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+@Slf4j
 @Service
 public class MarketSearchService {
 
-    private static final Logger log = LoggerFactory.getLogger(MarketSearchService.class);
 
     private final AlphaVantageClient alphaVantageClient;
 

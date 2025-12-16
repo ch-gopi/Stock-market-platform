@@ -17,6 +17,38 @@ finnhub:
     username: postgres
     password: root
     driver-class-name: org.postgresql.Driver
+resilience4j:
+  circuitbreaker:
+    instances:
+      finnhubSearch:
+        registerHealthIndicator: true
+        slidingWindowSize: 10          # number of calls to measure
+        minimumNumberOfCalls: 5        # before calculating failure rate
+        failureRateThreshold: 50       # % of failures to trip breaker
+        waitDurationInOpenState: 30s   # how long breaker stays open
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+  retry:
+    instances:
+      finnhubSearch:
+        maxAttempts: 3                 # total attempts
+        waitDuration: 2s               # delay between retries
+        retryExceptions:
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+          - java.io.IOException
+
+  timelimiter:
+    instances:
+      finnhubSearch:
+        timeoutDuration: 3s            # max time per call
+        cancelRunningFuture: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
 
   jpa:
     hibernate:
@@ -25,6 +57,13 @@ finnhub:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-history: 7
+      max-file-size: 5MB
 
 
 

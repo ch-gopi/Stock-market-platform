@@ -4,6 +4,13 @@ server:
 spring:
   application:
     name: historical-service
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-history: 7
+      max-file-size: 5MB
 
   kafka:
     consumer:

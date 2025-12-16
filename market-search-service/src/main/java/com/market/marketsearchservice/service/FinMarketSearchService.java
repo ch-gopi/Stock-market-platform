@@ -1,11 +1,14 @@
 package com.market.marketsearchservice.service;
 import com.market.marketsearchservice.dto.*;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 @Service
@@ -23,6 +26,8 @@ public class FinMarketSearchService {
         this.redisTemplate = redisTemplate;
     }
 
+    @CircuitBreaker(name = "finnhubSearch", fallbackMethod = "fallbackSearch")
+    @Retry(name = "finnhubSearch", fallbackMethod = "fallbackSearch")
     public List<StockSearchDto> searchStocks(String query) {
         String cacheKey = "search:" + query.toUpperCase();
 
@@ -32,28 +37,23 @@ public class FinMarketSearchService {
             return cached.getResults();
         }
 
-        // 2. Call Finnhub if not cached
-        FinnhubSearchResponse searchResponse;
-        try {
-            searchResponse = webClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/search")
-                            .queryParam("q", query)
-                            .queryParam("token", apiKey)
-                            .build())
-                    .retrieve()
-                    .bodyToMono(FinnhubSearchResponse.class)
-                    .block();
-        } catch (WebClientResponseException.TooManyRequests e) {
-            // 3. If rate limited, return cached fallback if available
-            if (cached != null && cached.getResults() != null) return cached.getResults();
-            return List.of(); // or defaults
-        }
+        // 2. Call Finnhub /search
+        FinnhubSearchResponse searchResponse = webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/search")
+                        .queryParam("q", query)
+                        .queryParam("token", apiKey)
+                        .build())
+                .retrieve()
+                .bodyToMono(FinnhubSearchResponse.class)
+                .timeout(Duration.ofSeconds(3)) // avoid hanging
+                .block();
 
         if (searchResponse == null || searchResponse.getResult() == null) {
             return List.of();
         }
 
+        // 3. Map results with symbol details
         List<StockSearchDto> results = searchResponse.getResult().stream()
                 .map(result -> {
                     String exchange = detectExchange(result.getSymbol());
@@ -68,6 +68,7 @@ public class FinMarketSearchService {
                                         .build())
                                 .retrieve()
                                 .bodyToFlux(FinnhubSymbolDetails.class)
+                                .timeout(Duration.ofSeconds(3))
                                 .collectList()
                                 .block();
 
@@ -83,7 +84,6 @@ public class FinMarketSearchService {
 
                     Double score = result.getMatchScore();
 
-                    // Fallback defaults if details are missing
                     return new StockSearchDto(
                             result.getSymbol(),
                             result.getDescription(),
@@ -98,15 +98,26 @@ public class FinMarketSearchService {
                 })
                 .toList();
 
-        // 4. Wrap results in cache object
+        // 4. Cache results with TTL
         StockSearchResultCache cacheWrapper = new StockSearchResultCache();
         cacheWrapper.setResults(results);
-
-        // 5. Cache latest results with TTL (e.g. 300 seconds)
         redisTemplate.opsForValue().set(cacheKey, cacheWrapper, 300, TimeUnit.SECONDS);
 
         return results;
     }
+
+    // Fallback method for circuit breaker / retry
+    public List<StockSearchDto> fallbackSearch(String query, Throwable t) {
+        String cacheKey = "search:" + query.toUpperCase();
+        StockSearchResultCache cached = (StockSearchResultCache) redisTemplate.opsForValue().get(cacheKey);
+        if (cached != null && cached.getResults() != null) {
+            System.err.println("Finnhub unavailable, serving cached results for " + query);
+            return cached.getResults();
+        }
+        System.err.println("Finnhub unavailable, no cache found for " + query);
+        return List.of(); // safe default
+    }
+
 
     private String detectExchange(String symbol) {
         if (symbol.endsWith(".TO")) return "TO";   // Toronto

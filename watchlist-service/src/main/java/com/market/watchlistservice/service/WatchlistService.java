@@ -5,10 +5,13 @@ import com.market.watchlistservice.dto.*;
 import com.market.watchlistservice.entity.WatchlistEntry;
 import com.market.common.dto.FinQuoteTickEvent;
 import com.market.watchlistservice.repository.WatchlistRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+
+@Slf4j
+
 @Service
 public class WatchlistService {
 
@@ -41,6 +44,7 @@ public class WatchlistService {
                     repo.save(entry);
                     return entry;
                 });
+        log.info("Watchlist entry added to watchlist");
 
         //  Always return enriched DTO
         return buildDto(normalized);
@@ -51,6 +55,7 @@ public class WatchlistService {
                 .filter(i -> i.getSymbol().equalsIgnoreCase(symbol))
                 .findFirst()
                 .ifPresent(repo::delete);
+        log.info("Watchlist entry removed from watchlist");
     }
 
     /** Helper to build a WatchlistItemDto with live quote and sparkline */
