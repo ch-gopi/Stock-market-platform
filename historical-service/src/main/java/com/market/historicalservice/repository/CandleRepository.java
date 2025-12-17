@@ -12,20 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-
-
 public interface CandleRepository extends JpaRepository<CandleEntity, Long> {
+
+
+
     @Query("SELECT new com.market.historicalservice.dto.CandleDto(c.symbol, c.timestamp, c.open, c.high, c.low, c.close, c.volume) " +
             "FROM CandleEntity c " +
-            "WHERE c.symbol = :symbol AND c.timestamp BETWEEN :from AND :to " +
+            "WHERE c.symbol = :symbol AND c.timestamp BETWEEN :startTs AND :endTs " +
             "ORDER BY c.timestamp ASC")
     List<CandleDto> findBySymbolAndTimestampBetween(@Param("symbol") String symbol,
-                                                    @Param("from") long from,
-                                                    @Param("to") long to);
-
+                                                    @Param("startTs") long startTs,
+                                                    @Param("endTs") long endTs);
 
 }
+
+
 /*
 
 @Repository

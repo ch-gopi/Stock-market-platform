@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @RequestMapping("/historical")
+
 public class HistoricalController {
 
     private final HistoricalService historicalService;
@@ -16,17 +17,14 @@ public class HistoricalController {
     public HistoricalController(HistoricalService historicalService) {
         this.historicalService = historicalService;
     }
-
     @GetMapping("/{symbol}")
     public ResponseEntity<List<CandleDto>> getHistoricalData(
-            @PathVariable("symbol") String symbol,
+            @PathVariable(name = "symbol") String symbol,
             @RequestParam(name = "range", defaultValue = "1m") String range) {
 
-        List<CandleDto> candles = historicalService.getCandles(symbol, range);
+        List<CandleDto> candles =
+                historicalService.getCandles(symbol, range);
 
-        if (candles.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok(candles);
     }
 }

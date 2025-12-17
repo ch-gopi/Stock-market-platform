@@ -4,13 +4,19 @@ server:
 spring:
   application:
     name: historical-service
-logging:
-  file:
-    name: logs/${spring.application.name}.log
-  logback:
-    rollingpolicy:
-      max-history: 7
-      max-file-size: 5MB
+  datasource:
+    url: jdbc:postgresql://localhost:5432/historicaldb
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none   # don’t recreate schema
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
 
   kafka:
     consumer:
@@ -23,25 +29,22 @@ logging:
         spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
         spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
         spring.json.trusted.packages: "*"
-        spring.json.use.type.headers: false   #  ignore producer’s header
+        spring.json.use.type.headers: false   # ignore producer’s header
         spring.json.value.default.type: com.market.historicalservice.dto.FinQuoteTickEvent
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/historicaldb
-    username: postgres
-    password: root
-    driver-class-name: org.postgresql.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: update   # use validate/create/update depending on migration strategy
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   config:
     import: "optional:configserver:http://localhost:8888"
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-history: 7
+      max-file-size: 5MB
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 eureka:
   client:

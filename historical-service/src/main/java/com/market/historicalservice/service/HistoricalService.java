@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -62,69 +64,78 @@ public class HistoricalService {
         return candles;
     }*/
 
-    private final CandleRepository candleRepository;
-
-    public HistoricalService(CandleRepository repository, CandleRepository candleRepository) {
-        this.candleRepository = candleRepository;
-    }
 /*
     public List<CandleDto> getHistoricalData(String symbol, String range) {
         return candleRepository.findBySymbolAndRange(symbol, range);
     }*/
 
-/*    public void aggregateTick(QuoteTickEvent tick) {
-        // Use trading day as timestamp anchor
-        long timestamp = System.currentTimeMillis();
+    /*    public void aggregateTick(QuoteTickEvent tick) {
+            // Use trading day as timestamp anchor
+            long timestamp = System.currentTimeMillis();
 
-        // Build candle using tick fields
-        CandleDto candle = new CandleDto(
-                timestamp,
-                tick.getOpen(),          // open
-                tick.getHigh(),          // high
-                tick.getLow(),           // low
-                tick.getPrice(),         // close (latest price)
-                tick.getVolume()         // volume
-        );
+            // Build candle using tick fields
+            CandleDto candle = new CandleDto(
+                    timestamp,
+                    tick.getOpen(),          // open
+                    tick.getHigh(),          // high
+                    tick.getLow(),           // low
+                    tick.getPrice(),         // close (latest price)
+                    tick.getVolume()         // volume
+            );
 
-        candleRepository.save(tick.getSymbol(), candle);
-    }*/
+            candleRepository.save(tick.getSymbol(), candle);
+        }*/
 
-    public List<CandleDto> getCandles(String symbol, String range) {
-        long now = Instant.now().toEpochMilli();
-        long from;
 
-        switch (range) {
 
-                case "1d":
-                    from = Instant.now().minus(1, ChronoUnit.DAYS).toEpochMilli();
-                    break;
-                case "1w":
-                    from = Instant.now().minus(7, ChronoUnit.DAYS).toEpochMilli();
-                    break;
-                case "1m":
-                    from = Instant.now().minus(30, ChronoUnit.DAYS).toEpochMilli();
-                    break;
-                case "3m":
-                    from = Instant.now().minus(90, ChronoUnit.DAYS).toEpochMilli();
-                    break;
-                case "6m":
-                    from = Instant.now().minus(180, ChronoUnit.DAYS).toEpochMilli();
-                    break;
-                case "1y":
-                    from = Instant.now().minus(365, ChronoUnit.DAYS).toEpochMilli();
-                    break;
-                case "5y":
-                    from = Instant.now().minus(5, ChronoUnit.YEARS).toEpochMilli();
-                    break;
-                default:
-                    from = Instant.now().minus(1, ChronoUnit.DAYS).toEpochMilli();
+
+        private final CandleRepository candleRepository;
+
+        public HistoricalService(CandleRepository candleRepository) {
+            this.candleRepository = candleRepository;
+        }
+
+        public List<CandleDto> getCandles(String symbol, String range) {
+
+            String symbolNormalized = symbol.trim().toUpperCase(Locale.ROOT);
+            String rangeNormalized = range.trim().toLowerCase(Locale.ROOT);
+
+            ZoneId zone = ZoneId.of("UTC");
+            ZonedDateTime now = ZonedDateTime.now(zone);
+            ZonedDateTime from;
+
+            switch (rangeNormalized) {
+                case "1d" -> from = now.minusDays(1);
+                case "1w" -> from = now.minusWeeks(1);
+                case "1m" -> from = now.minusMonths(1);
+                case "3m" -> from = now.minusMonths(3);
+                case "6m" -> from = now.minusMonths(6);
+                case "1y" -> from = now.minusYears(1);
+                case "5y" -> from = now.minusYears(5);
+                default -> throw new IllegalArgumentException("Invalid range: " + range);
             }
 
+            long startTs = from.toInstant().toEpochMilli();
+            long endTs   = now.toInstant().toEpochMilli();
 
-            return candleRepository.findBySymbolAndTimestampBetween(symbol, from, now);
+            log.info(
+                    "Historical query: symbol={}, startTs={}, endTs={}",
+                    symbolNormalized,
+                    startTs,
+                    endTs
+            );
+
+            List<CandleDto> result =
+                    candleRepository.findBySymbolAndTimestampBetween(
+                            symbolNormalized,
+                            startTs,
+                            endTs
+                    );
+
+            log.info("Historical result size: {}", result.size());
+            return result;
+        }
     }
-
-}
 
 /*
 
