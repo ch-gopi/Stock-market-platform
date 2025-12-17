@@ -457,3 +457,81 @@
 2025-12-17T11:54:59.428+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
 2025-12-17T11:59:55.821+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2025-12-17T11:59:59.448+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T12:04:55.827+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T12:04:59.463+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T12:09:55.838+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T12:09:59.516+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T12:14:55.845+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T12:14:59.568+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T12:19:55.858+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T12:19:59.660+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T12:24:55.871+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T12:24:59.680+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T12:29:55.881+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T12:29:59.708+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T12:34:55.895+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T12:34:59.729+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T12:39:55.896+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T12:39:59.774+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T12:41:14.257+05:30  INFO 54208 --- [market-search-service] [http-nio-8090-exec-1] o.apache.coyote.http11.Http11Processor   : Error parsing HTTP request header
+ Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+
+java.lang.IllegalArgumentException: Invalid character found in method name [0x160x030x010x060xd20x010x000x060xce0x030x030x91 ]. HTTP method names must be tokens
+	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:406) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:270) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2025-12-17T12:41:14.277+05:30  INFO 54208 --- [market-search-service] [http-nio-8090-exec-10] o.apache.coyote.http11.Http11Processor   : Error parsing HTTP request header
+ Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+
+java.lang.IllegalArgumentException: Invalid character found in method name [0x160x030x010x060xb20x010x000x060xae0x030x030xf40x890xf2W0xd7{#0xc90xf10xc50x1e0xa70x00l0xde0x1e0xa2l0xde0xe1Y0xde:<0xba"0xcf0xce0x19t0x1b0xeb ]. HTTP method names must be tokens
+	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:406) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:270) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2025-12-17T12:44:55.915+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T12:44:59.962+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T12:49:55.944+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T12:50:00.071+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T12:54:55.972+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T12:55:02.562+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T12:59:55.991+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T13:00:02.631+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T13:04:56.003+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T13:05:02.669+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T13:09:56.035+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T13:10:02.750+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T13:14:56.057+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T13:15:02.835+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T13:19:56.078+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T13:20:03.024+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T13:24:56.103+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T13:25:03.169+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T13:29:56.122+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T13:30:03.187+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T13:34:56.126+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T13:35:03.211+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T13:39:56.133+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T13:40:03.246+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T13:44:56.145+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T13:45:03.263+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T13:49:56.165+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T13:50:03.276+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T13:54:56.170+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T13:55:03.301+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols
+2025-12-17T13:59:56.175+05:30  INFO 54208 --- [market-search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-17T14:00:03.309+05:30  INFO 54208 --- [market-search-service] [scheduling-1] c.m.m.service.EnrichmentScheduler        : Published enrichment events for all symbols

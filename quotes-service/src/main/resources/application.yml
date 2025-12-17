@@ -42,6 +42,29 @@ jwt:
 finnhub:
   api:
     key: d4se4apr01qvsjbh6j00d4se4apr01qvsjbh6j0g
+resilience4j:
+  circuitbreaker:
+    instances:
+      finnhub:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+  retry:
+    instances:
+      finnhub:
+        max-attempts: 3
+        wait-duration: 2s
+
+  bulkhead:
+    instances:
+      finnhub:
+        max-concurrent-calls: 10
+        max-wait-duration: 0
 
 eureka:
   client:
