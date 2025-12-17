@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
@@ -38,34 +39,47 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http .csrf(ServerHttpSecurity.CsrfSpec::disable)
-
-                // disable CSRF for APIs
+        http
+                .csrf(ServerHttpSecurity.CsrfSpec::disable) // disable CSRF for APIs
                 .authorizeExchange(exchanges -> exchanges
+                        // allow preflight requests
+                        .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // public endpoints
                         .pathMatchers("/auth/register", "/auth/login").permitAll()
-                        .pathMatchers("/ws-quotes/**","/ws-watchlist/**").permitAll()
+                        .pathMatchers("/ws-quotes/**", "/ws-watchlist/**").permitAll()
+
+                        // protected endpoints
                         .pathMatchers("/auth/me").authenticated()
                         .anyExchange().authenticated()
                 )
-
-                // JWT validation (new style in 6.1+)
-        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-
+                // JWT validation
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
+
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:5173");
-        config.addAllowedMethod("*");
-        config.addAllowedHeader("*");
+        config.addAllowedOrigin("http://localhost:5173"); // frontend origin
+        config.addAllowedMethod("*");                     // allow all methods
+        config.addAllowedHeader("*");                     // allow all headers
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
 
-        return new CorsWebFilter(source);}
+        return new CorsWebFilter(source);
+    }
+
+    @Bean
+    public ReactiveJwtDecoder jwtDecoder(@Value("${jwt.secret}") String secret) {
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+        return NimbusReactiveJwtDecoder.withSecretKey(key).build();
+    }
+}
+
 /*
     @Bean
     public GlobalFilter jwtUserInjectionFilter(ReactiveJwtDecoder jwtDecoder) {
@@ -91,17 +105,3 @@ public class SecurityConfig {
         };
     }
 */
-
-    @Bean
-    public ReactiveJwtDecoder jwtDecoder(@Value("${jwt.secret}") String secret) {
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-        return NimbusReactiveJwtDecoder.withSecretKey(key).build();
-    }
-
-
-
-
-
-
-
-}
