@@ -16,6 +16,16 @@ logging:
     rollingpolicy:
       max-history: 7
       max-file-size: 5MB
+resilience4j:
+  circuitbreaker:
+    instances:
+      historical:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
 
   redis:
     host: localhost

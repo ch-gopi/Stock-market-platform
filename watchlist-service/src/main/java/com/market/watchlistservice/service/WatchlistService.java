@@ -6,12 +6,12 @@ import com.market.watchlistservice.entity.WatchlistEntry;
 import com.market.common.dto.FinQuoteTickEvent;
 import com.market.watchlistservice.repository.WatchlistRepository;
 import lombok.extern.slf4j.Slf4j;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
-
 @Slf4j
-
 @Service
 public class WatchlistService {
 
@@ -63,7 +63,8 @@ public class WatchlistService {
         FinQuoteTickEvent tick = quoteCache.getLatestTick(symbol);
         double prevClose = quoteCache.getPreviousClose(symbol);
 
-        List<CandleDto> history = historicalClient.getHistory(symbol, "1m");
+        // Circuit breaker applied here
+        List<CandleDto> history = getHistoryWithCircuitBreaker(symbol);
         List<Double> sparkline = history.stream()
                 .map(CandleDto::getClose)
                 .toList();
@@ -83,5 +84,16 @@ public class WatchlistService {
         } else {
             return new WatchlistItemDto(symbol, 0, 0, 0, sparkline);
         }
+    }
+
+    @CircuitBreaker(name = "historical", fallbackMethod = "fallbackHistory")
+    private List<CandleDto> getHistoryWithCircuitBreaker(String symbol) {
+        return historicalClient.getHistory(symbol, "1m");
+    }
+
+    // Fallback method when historical service is unavailable
+    private List<CandleDto> fallbackHistory(String symbol, Throwable t) {
+        log.warn("Historical service unavailable for {}. Returning empty history.", symbol, t);
+        return Collections.emptyList();
     }
 }

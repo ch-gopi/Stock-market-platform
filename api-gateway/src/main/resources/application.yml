@@ -22,7 +22,8 @@ spring:
         - id: market-search
           uri: lb://market-search-service
           predicates:
-           - Path=/search, /search/**
+           - Path=/search
+           - Path=/search/**
           filters:
             - StripPrefix=0
 
@@ -64,3 +65,24 @@ eureka:
 jwt:
   secret: 2c1dXSuXoU0H4nQ9vN7gK2dZ9wL8fY6pJ1rV2bT6oP8=
   expiration: 86400000   # 1 day
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: stock-market-platform
+info:
+  app:
+    name: api-gateway
+    description: Market Discovery Gateway
+    version: 1.0.0
+  build:
+    artifact: api-gateway
+    name: Market Discovery API Gateway
+    version: 1.0.0
+    time: 2025-12-17T12:00:00Z
