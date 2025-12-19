@@ -59,6 +59,12 @@ resilience4j:
       finnhub:
         max-attempts: 3
         wait-duration: 2s
+        retry-exceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+        ignore-exceptions:
+          - java.lang.IllegalArgumentException
+
 
   bulkhead:
     instances:

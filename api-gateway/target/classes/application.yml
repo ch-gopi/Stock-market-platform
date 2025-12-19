@@ -5,6 +5,10 @@ spring:
   application:
     name: api-gateway
 
+  redis:
+    host: localhost
+    port: 6379
+
   cloud:
     gateway:
       websocket:
@@ -13,20 +17,47 @@ spring:
         - id: watchlist-ws
           uri: lb://watchlist-service
           predicates:
-           - Path=/ws-watchlist/**
+            - Path=/ws-watchlist/**
+          filters:
+            - StripPrefix=0
+            - name: CircuitBreaker
+              args:
+                name: watchlistServiceCB
+                fallbackUri: forward:/fallback/watchlist
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+
         - id: quotes-ws
           uri: lb://quotes-service
           predicates:
             - Path=/ws-quotes/**
+          filters:
+            - StripPrefix=0
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
 
         - id: market-search
           uri: lb://market-search-service
           predicates:
-           - Path=/search
-           - Path=/search/**
+            - Path=/search
+            - Path=/search/**
           filters:
             - StripPrefix=0
-
+            - name: CircuitBreaker
+              args:
+                name: marketSearchServiceCB
+                fallbackUri: forward:/fallback/marketsearch
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
 
         - id: quotes-service
           uri: lb://quotes-service
@@ -34,7 +65,15 @@ spring:
             - Path=/quotes/**
           filters:
             - StripPrefix=0
-
+            - name: CircuitBreaker
+              args:
+                name: quotesServiceCB
+                fallbackUri: forward:/fallback/quotes
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
 
         - id: historical-service
           uri: lb://historical-service
@@ -42,6 +81,15 @@ spring:
             - Path=/historical/**
           filters:
             - StripPrefix=0
+            - name: CircuitBreaker
+              args:
+                name: historicalServiceCB
+                fallbackUri: forward:/fallback/historical
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
 
         - id: watchlist-service
           uri: lb://watchlist-service
@@ -49,6 +97,11 @@ spring:
             - Path=/watchlist/**
           filters:
             - StripPrefix=0
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
 
         - id: user-service
           uri: lb://user-service
@@ -56,6 +109,15 @@ spring:
             - Path=/auth/**
           filters:
             - StripPrefix=0
+            - name: CircuitBreaker
+              args:
+                name: userServiceCB
+                fallbackUri: forward:/fallback/user
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
 
 eureka:
   client:
@@ -65,17 +127,65 @@ eureka:
 jwt:
   secret: 2c1dXSuXoU0H4nQ9vN7gK2dZ9wL8fY6pJ1rV2bT6oP8=
   expiration: 86400000   # 1 day
+
 management:
   endpoints:
     web:
       exposure:
-        include: health, info, metrics, prometheus
+        include: "*"
   endpoint:
     health:
       show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      watchlistServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+      quotesServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+
+      historicalServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+
+      userServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+
+      marketSearchServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
   metrics:
     tags:
       application: stock-market-platform
+
 info:
   app:
     name: api-gateway
