@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoders;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.web.cors.CorsConfiguration;
@@ -37,6 +38,9 @@ public class SecurityConfig {
     @Value("${jwt.secret}")
     private String secretKey;
 
+    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    private String issuerUri; // Keycloak realm issuer
+
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
@@ -53,8 +57,8 @@ public class SecurityConfig {
                         .pathMatchers("/auth/me").authenticated()
                         .anyExchange().authenticated()
                 )
-                // JWT validation
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+                // ✅ JWT validation via Keycloak
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtDecoder(jwtDecoder())));
 
         return http.build();
     }
@@ -73,14 +77,29 @@ public class SecurityConfig {
         return new CorsWebFilter(source);
     }
 
+    /**
+     * ✅ Hybrid JWT Decoder:
+     * - First tries Keycloak (RSA via JWKS)
+     * - Falls back to HMAC secret for legacy tokens
+     */
     @Bean
-    public ReactiveJwtDecoder jwtDecoder(@Value("${jwt.secret}") String secret) {
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-        return NimbusReactiveJwtDecoder.withSecretKey(key).build();
-    }
-}
+    public ReactiveJwtDecoder jwtDecoder() {
+        // Keycloak RSA decoder
+        ReactiveJwtDecoder keycloakDecoder = ReactiveJwtDecoders.fromIssuerLocation(issuerUri);
 
-/*
+        // Legacy HMAC decoder
+        SecretKey hmacKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+        ReactiveJwtDecoder hmacDecoder = NimbusReactiveJwtDecoder.withSecretKey(hmacKey).build();
+
+        return token -> keycloakDecoder.decode(token)
+                .onErrorResume(e -> {
+                    log.warn("Keycloak JWT validation failed, trying HMAC decoder: {}", e.getMessage());
+                    return hmacDecoder.decode(token);
+                });
+    }
+
+    /*
+    // Optional: inject userId into headers for downstream services
     @Bean
     public GlobalFilter jwtUserInjectionFilter(ReactiveJwtDecoder jwtDecoder) {
         return (exchange, chain) -> {
@@ -104,4 +123,5 @@ public class SecurityConfig {
             return exchange.getResponse().setComplete();
         };
     }
-*/
+    */
+}

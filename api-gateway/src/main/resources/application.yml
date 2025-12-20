@@ -119,6 +119,13 @@ spring:
                 redis-rate-limiter.replenishRate: 10
                 redis-rate-limiter.burstCapacity: 20
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8443/realms/Stock-Market-App
+
+
 eureka:
   client:
     service-url:
